@@ -14,5 +14,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: build
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
       run: |
         bash ./build.sh
