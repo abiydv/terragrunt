@@ -1,0 +1,14 @@
+name: terragrunt-image
+
+on: 
+  schedule:
+    - cron:  '0 0 * * 1'
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: build
+      run: |
+        bash ./build.sh

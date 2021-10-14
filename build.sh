@@ -50,7 +50,7 @@ if [[ ( $sum -ne 1 ) || ( ${REBUILD} == "true" ) ]];then
   docker tag ${image}:${latest} ${image}:latest
 
   #if [[ "$CIRCLE_BRANCH" == "master" ]]; then
-    docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    docker login -u $DOCKER_USERNAME -p $DOCKER_TOKEN
     docker push ${image}:${latest}
     docker push ${image}:latest
   #fi
