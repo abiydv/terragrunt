@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 
-# Prerequisite
-# Make sure you set secret enviroment variables in Travis CI
+# Make sure you set secrets in Github repo
 # DOCKER_USERNAME
-# DOCKER_PASSWORD
-# API_TOKEN
+# DOCKER_TOKEN
 
 set -ex
 
 image="abiydv/terragrunt"
-repo="hashicorp/terraform"
 
 if [[ ${CI} == 'true' ]]; then
   CURL="curl -sL -H \"Authorization: token ${API_TOKEN}\""
@@ -17,9 +14,11 @@ else
   CURL="curl -sL"
 fi
 
-latest=$(${CURL} https://api.github.com/repos/${repo}/releases/latest |jq -r .tag_name|sed 's/v//')
+terraform=$(${CURL} https://api.github.com/repos/hashicorp/terraform/releases/latest |jq -r .tag_name|sed 's/v//')
 
 terragrunt=$(${CURL} https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest |jq -r .tag_name)
+
+latest=${terraform}
 
 sum=0
 echo "Lastest release is: ${latest}"
@@ -46,13 +45,10 @@ fi
 
 if [[ ( $sum -ne 1 ) || ( ${REBUILD} == "true" ) ]];then
   sed "s/VERSION/${latest}/" Dockerfile.template > Dockerfile
-  docker build --build-arg TERRAGRUNT=${terragrunt} --no-cache -t ${image}:${latest} .
+  docker build --build-arg TERRAGRUNT=${terragrunt} --build-arg TERRAFORM=${terraform} --no-cache -t ${image}:${latest} .
   docker tag ${image}:${latest} ${image}:latest
-
-  #if [[ "$CIRCLE_BRANCH" == "master" ]]; then
-    docker login -u $DOCKER_USERNAME -p $DOCKER_TOKEN
-    docker push ${image}:${latest}
-    docker push ${image}:latest
-  #fi
+  docker login -u $DOCKER_USERNAME -p $DOCKER_TOKEN
+  docker push ${image}:${latest}
+  docker push ${image}:latest
 
 fi
