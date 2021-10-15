@@ -1,3 +1,5 @@
+[![terragrunt-image](https://github.com/abiydv/terragrunt/actions/workflows/main.yaml/badge.svg?branch=master)](https://github.com/abiydv/terragrunt/actions/workflows/main.yaml)
+
 # Terragrunt, Terraform & Python
 
 (Based off of the awesome work at https://github.com/alpine-docker/terragrunt, Thank you guys!)
