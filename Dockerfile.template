@@ -1,4 +1,4 @@
-FROM python:3.9-alpine
+FROM python:PY_IMAGE_TAG
 
 ARG TERRAGRUNT
 
