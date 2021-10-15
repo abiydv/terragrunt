@@ -6,7 +6,11 @@
 
 set -ex
 
+# Define the base python image tag to use
+py_image_tag="3.9-alpine"
+
 image="abiydv/terragrunt"
+
 
 if [[ ${CI} == 'true' ]]; then
   CURL="curl -sL -H \"Authorization: token ${API_TOKEN}\""
@@ -44,7 +48,7 @@ if [ $(date -d ${terragrunt_published_date} +%s) -gt $(date -d ${image_published
 fi
 
 if [[ ( $sum -ne 1 ) || ( ${REBUILD} == "true" ) ]];then
-  sed "s/VERSION/${latest}/" Dockerfile.template > Dockerfile
+  sed "s/PY_IMAGE_TAG/${py_image_tag}/" Dockerfile.template > Dockerfile
   docker build --build-arg TERRAGRUNT=${terragrunt} --build-arg TERRAFORM=${terraform} --no-cache -t ${image}:${latest} .
   docker tag ${image}:${latest} ${image}:latest
   docker login -u $DOCKER_USERNAME -p $DOCKER_TOKEN
