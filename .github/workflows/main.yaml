@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - awscli
 
   schedule:
     - cron:  '0 0 * * 1'
