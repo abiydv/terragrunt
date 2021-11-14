@@ -6,9 +6,6 @@
 
 set -ex
 
-# Define the base python image tag to use
-py_image_tag="3.9-alpine"
-
 image="abiydv/terragrunt"
 
 
@@ -22,7 +19,8 @@ terraform=$(${CURL} https://api.github.com/repos/hashicorp/terraform/releases/la
 
 terragrunt=$(${CURL} https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest |jq -r .tag_name)
 
-latest=${terraform}
+latest=${terraform}-awscli
+latest_tag=latest-awscli
 
 sum=0
 echo "Lastest release is: ${latest}"
@@ -48,11 +46,9 @@ if [ $(date -d ${terragrunt_published_date} +%s) -gt $(date -d ${image_published
 fi
 
 if [[ ( $sum -ne 1 ) || ( ${REBUILD} == "true" ) ]];then
-  sed "s/PY_IMAGE_TAG/${py_image_tag}/" Dockerfile.template > Dockerfile
   docker build --build-arg TERRAGRUNT=${terragrunt} --build-arg TERRAFORM=${terraform} --no-cache -t ${image}:${latest} .
-  docker tag ${image}:${latest} ${image}:latest
+  docker tag ${image}:${latest} ${image}:${latest_tag}
   docker login -u $DOCKER_USERNAME -p $DOCKER_TOKEN
   docker push ${image}:${latest}
-  docker push ${image}:latest
-
+  docker push ${image}:${latest_tag}
 fi
