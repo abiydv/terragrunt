@@ -46,7 +46,7 @@ if [ $(date -d ${terragrunt_published_date} +%s) -gt $(date -d ${image_published
 fi
 
 if [[ ( $sum -ne 1 ) || ( ${REBUILD} == "true" ) ]];then
-  docker build --build-arg TERRAGRUNT=${terragrunt} --build-arg TERRAFORM=${terraform} --no-cache -t ${image}:${latest} .
+  docker build --build-arg TERRAGRUNT=${terragrunt} --build-arg TERRAFORM=${terraform} --build-arg EXE_FILENAME=awscli-exe-linux-x86_64.zip --no-cache -t ${image}:${latest} .
   docker tag ${image}:${latest} ${image}:${latest_tag}
   docker login -u $DOCKER_USERNAME -p $DOCKER_TOKEN
   docker push ${image}:${latest}
