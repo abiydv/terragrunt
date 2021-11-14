@@ -2,11 +2,11 @@ FROM amazonlinux:2 as installer
 
 ARG EXE_FILENAME
 
-ADD https://awscli.amazonaws.com/$EXE_FILENAME $EXE_FILENAME 
+ADD https://awscli.amazonaws.com/${EXE_FILENAME} ${EXE_FILENAME}
 
 RUN yum update -y \
     && yum install -y unzip \
-    && unzip $EXE_FILENAME \
+    && unzip ${EXE_FILENAME} \
     && ./aws/install --bin-dir /aws-cli-bin/
 
 FROM amazonlinux:2
